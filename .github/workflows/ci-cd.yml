@@ -1,6 +1,6 @@
 name: MLOps CI/CD Pipeline
 
-on:
+"on":
   push:
     branches: [ "main" ]
   pull_request:
