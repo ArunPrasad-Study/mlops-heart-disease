@@ -218,3 +218,9 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Local MLflow experiment data
+mlruns/
+
+# Generated model artifacts
+# Keep models/best_model.pkl available for deployment
