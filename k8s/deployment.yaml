@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: heart-disease-api
-        image: ArunPrasad-Study/heart-disease-api:latest
+        image: heart-disease-api:latest
         ports:
         - containerPort: 8000
         resources:
