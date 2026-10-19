@@ -7,6 +7,8 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.pipeline import Pipeline
 from sklearn.metrics import accuracy_score, precision_score, recall_score, roc_auc_score
+import matplotlib.pyplot as plt
+from sklearn.metrics import ConfusionMatrixDisplay, RocCurveDisplay
 import joblib
 import os
 
@@ -57,10 +59,12 @@ for name, model in models.items():
         # Cross-validation
         cv_scores = cross_val_score(pipe, X_train, y_train, cv=5, scoring='roc_auc')
         
-        # Log to MLflow
+        # Log all model parameters to MLflow
         mlflow.log_param("model_type", name)
-        if name == "Random_Forest":
-            mlflow.log_param("n_estimators", 100)
+        mlflow.log_params({
+            key: str(value)
+            for key, value in model.get_params().items()
+        })
             
         mlflow.log_metric("accuracy", acc)
         mlflow.log_metric("precision", prec)
@@ -68,6 +72,27 @@ for name, model in models.items():
         mlflow.log_metric("roc_auc", auc)
         mlflow.log_metric("cv_auc_mean", cv_scores.mean())
         
+        # Log ROC curve
+        os.makedirs("artifacts", exist_ok=True)
+        fig, ax = plt.subplots()
+        RocCurveDisplay.from_predictions(y_test, y_prob, ax=ax)
+        ax.set_title(f"{name} - ROC Curve")
+        fig.tight_layout()
+        roc_path = f"artifacts/{name}_roc_curve.png"
+        fig.savefig(roc_path)
+        mlflow.log_artifact(roc_path, artifact_path="plots")
+        plt.close(fig)
+
+        # Log confusion matrix
+        fig, ax = plt.subplots()
+        ConfusionMatrixDisplay.from_predictions(y_test, y_pred, ax=ax)
+        ax.set_title(f"{name} - Confusion Matrix")
+        fig.tight_layout()
+        cm_path = f"artifacts/{name}_confusion_matrix.png"
+        fig.savefig(cm_path)
+        mlflow.log_artifact(cm_path, artifact_path="plots")
+        plt.close(fig)
+
         # Log Model and Preprocessor
         mlflow.sklearn.log_model(pipe, "model")
         

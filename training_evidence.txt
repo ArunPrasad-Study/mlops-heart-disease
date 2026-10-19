@@ -1,0 +1,5 @@
+2026/10/18 21:16:20 WARNING mlflow.models.model: Model logged without a signature and input example. Please set `input_example` parameter when logging the model to auto infer the model signature.
+2026/10/18 21:16:32 WARNING mlflow.models.model: Model logged without a signature and input example. Please set `input_example` parameter when logging the model to auto infer the model signature.
+Logistic_Regression - AUC: 0.9421
+Random_Forest - AUC: 0.9462
+Best model (Random_Forest) saved to models/best_model.pkl
